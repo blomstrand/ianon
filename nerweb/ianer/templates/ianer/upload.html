@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script>
+		$(document).ready(function(){
+			document.getElementById("uploadBtn").onchange = function () {
+			var path = this.value;
+			var cleanPath = path.replace("C:\\fakepath\\", "");
+			document.getElementById("uploadFile").value = cleanPath;
+			$('#filename').val(cleanPath);
+			$('.collapse').collapse("show");
+			};
+		});
+	</script>
+	<style>
+	* {
+		box-sizing: border-box;
+	}
+	.affix {
+		top: 20px;
+	}
+	
+	.fileUpload {
+		position: relative;
+		overflow: hidden;
+	}
+	.fileUpload input.upload {
+		position: absolute;
+		top: 0;
+		right: 0;
+		margin: 0;
+		padding: 0;
+		font-size: 20px;
+		cursor: pointer;
+		opacity: 0;
+		filter: alpha(opacity=0);
+	}
+
+	</style>
+        <meta charset="utf-8">
+        <title>Annoteringsverktyg</title>   
+    </head>
+    <body>
+		<div class="container" style="background-color:#2196F3;color:#fff;height:120px;">
+			<div class="page-header">
+				<h1>Annoteringsverktyg för Arbetets museum</h1>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-3">
+				</div>
+				<div class="col-sm-9">
+					{% if header %}
+						<h3>{{header}}</h3>
+					{% else %}
+						<h3>Ladda upp texter</h3>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<nav class="col-sm-3">
+					<ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
+						<li><a href="{% url 'main' %}"> Hem </a></li>
+						<li><a  href="{% url 'texts' %}">Texter</a></li>
+						<li class="active"><a  href="{% url 'upload' %}">Ladda upp</a></li>
+					</ul>
+				</nav>
+				<div class="col-sm-9" id="text">
+					<p>Bläddra efter en fil och klicka på Ladda upp.</p>
+					<form role="form" action="" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+						<div class="form-group">
+							<div class="fileUpload btn btn-default">
+								<span>Välj textfil</span>
+								<input id="uploadBtn" type="file" name="docfile" class="form-control upload">
+							</div>
+							<input id="uploadFile" placeholder="Välj fil" disabled="disabled" />
+						</div>
+						<div class="form-group">
+							<div id="upload_opts" class="collapse">
+								<label for="filename">Redigera filnamn:</label>
+								<input type="text" name="filename" id="filename" value="" class="form-control">
+							</div>
+						</div>
+						<button type="submit" name="upload_b" class="btn btn-primary" style="float: right;">Ladda upp</button>
+					</form>
+				</div>
+			</div>
+		</div>
+    </body>
+</html> 

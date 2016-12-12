@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Minimal Django File Upload Example</title>   
+    </head>
+    <body>
+        <!-- Upload form. Note enctype attribute! -->
+        <form action="{% url 'mainPage' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}
+                {{ form.docfile.errors }}
+                {{ form.docfile }}
+            </p>
+            <p><input type="submit" value="Kör!" /></p>
+        </form>
+		<!-- List of uploaded documents -->
+		{% if words %}
+			<ul>
+			{% for sentence in sentences %}
+				<span><li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
+			{% endfor %}
+			</ul>
+		{% else %}
+			<p>No documents.</p>
+		{% endif %}
+    </body>
+</html> <script type="text/javascript">
+	var g_duration = 122;
+var g_iisLatency = 1;
+var g_responseEnd = new Date().getTime();
+</script>

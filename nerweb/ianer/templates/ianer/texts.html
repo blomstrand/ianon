@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script>
+		function confirmDelete(){
+			//$('modal-body').append('<ul id="del_list" style="list-style-type:none"></ul>');
+			$('input:checked').each(function() {
+				
+				var text = $(this).parent().next().text();
+				var t = document.createElement("li");
+				t.innerHTML = text;
+				$('#del_list').append(t);
+			});
+			$("#del_conf").modal();
+		};
+		
+		$(document).ready(function(){
+			$("#del_conf").on('hidden.bs.modal', function () {
+				$('#del_list').remove();
+			});
+			
+			var checkboxes = $("input.doc_selector"),
+				exportButt = $("#exp_b"),
+				deleteButt = $("#del_b");;
+			
+			checkboxes.click(function() {
+				exportButt.attr("disabled", !checkboxes.is(":checked"));
+				exportButt.removeClass('disabled');	
+				deleteButt.attr("disabled", !checkboxes.is(":checked"));
+				deleteButt.removeClass('disabled');	
+			});
+		});
+
+		
+	</script>
+	<style>
+	* {
+		box-sizing: border-box;
+	}
+	.affix {
+		top: 20px;
+	}
+	</style>
+        <meta charset="utf-8">
+        <title>Annoteringsverktyg</title>   
+    </head>
+    <body>
+		<div class="container" style="background-color:#2196F3;color:#fff;height:120px;">
+			<div class="page-header">
+				<h1>Annoteringsverktyg för Arbetets museum</h1>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-3">
+				</div>
+				<div class="col-sm-9">
+					{% if header %}
+						<h3>{{header}}</h3>
+					{% else %}
+						<h3>Uppladdade texter</h3>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<nav class="col-sm-3">
+					<ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
+						<li><a href="{% url 'main' %}"> Hem </a></li>
+						<li class="active"><a  href="{% url 'texts' %}">Texter</a></li>
+						<li><a  href="{% url 'upload' %}">Ladda upp</a></li>
+					</ul>
+				</nav>
+				<div class="col-sm-9" id="text">
+				{% if documents %}
+					<form role="form" method="post" id="tableform">
+					{% csrf_token %}
+						<input type="submit" class="hidden" id="text_delete" name="delete" class="hidden">
+						<button id="exp_b" type="submit" name="export" class="btn btn-primary" disabled>Exportera</button>
+						<button id="del_b" type="button" class="btn btn-danger" disabled onclick="confirmDelete()">Ta bort</button>
+						<div class="table-responsive" style="height: 600px; overflow-y: auto; margin-top: 10px;">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th></th>
+										<th>Filnamn</th>
+										<th>Uppladdad</th>
+										<th>Senast ändrad</th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for document in documents %}
+									<tr>
+										<td><input name="check[]" class="doc_selector" type="checkbox" value={{document.id}}></td>
+										<td><a href="{% url 'edit' document.id %}">{{document.filename}}</a></td>
+										<td>{{document.uploaded}}</td>
+										<td>{{document.last_modified}}</td>
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</form>
+				</div>
+				{% else %}
+					<p>Inga dokument uppladdade</p>
+				{% endif %}
+			</div>
+		</div>
+		<div class="modal fade" id="del_conf" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 id="title">Bekräfta borttagning</h4>
+					</div>
+					<div class="modal-body">
+						<p>Är du säker på att du vill ta bort följande texter?<p/>
+						<ul id="del_list" style="list-style-type:none">
+							
+						</ul>
+					</div>
+					<div class="modal-footer">
+						<label for="text_delete" class="btn btn-primary">Ja</label>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
+					</div>
+				</div>
+			</div>
+		</div>
+    </body>
+</html> 
